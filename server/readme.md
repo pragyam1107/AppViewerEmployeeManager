@@ -1,2 +1,2 @@
 #start server by: 
-#node server/index.js
+node server/index.js

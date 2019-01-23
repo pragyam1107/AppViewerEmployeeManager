@@ -39,6 +39,7 @@ var employeeSchema = new Schema({
 
     viewers: [
         {
+            ref: 'employee',
             type: Schema.Types.ObjectId
         }
     ],

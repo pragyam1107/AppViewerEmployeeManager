@@ -4,6 +4,11 @@ var mongooseUtils = require('./mongoose.utils');
 
 var Schema = mongoose.Schema;
 
+var employeeSchema = {
+    type: Schema.Types.ObjectId,
+    ref: 'employee'
+};
+
 var companySchema = new Schema({
 
     _id: {
@@ -20,9 +25,7 @@ var companySchema = new Schema({
     },
 
     viewers: [
-        {
-            type: Schema.Types.ObjectId
-        }
+        employeeSchema
     ],
 
     total_views: {

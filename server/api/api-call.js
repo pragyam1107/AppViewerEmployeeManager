@@ -2,6 +2,8 @@ var Router = require('express').Router();
 
 var Controller = require('../controller/controller');
 
+Router.get('', Controller.loginOneEmployee);
+
 Router.get('/users/:id', Controller.getOneEmployee);
 
 Router.get('/company/:id', Controller.getOneCompany);

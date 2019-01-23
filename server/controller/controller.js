@@ -1,4 +1,4 @@
-var lodash = require('lodash');
+var _ = require('lodash');
 var mongoose = require('mongoose');
 // const redis = require('redis');
 // const client = redis.createClient();
@@ -12,10 +12,11 @@ let Employee = require('../dataModel/employeeModel');
 //     console.log('error: '+err);
 // });
 
-function getOneEmployee(req, res, next) {
-
-    let empId = req.params.id;
-    if (!empId) {
+function loginOneEmployee(req, res, next) {
+    
+    let empName = req.query.username;
+    let password = req.query.password;
+    if (!empName) {
 
         return res.json(ResponseUtils.responseMessage(false, 'error', null));
 
@@ -28,8 +29,26 @@ function getOneEmployee(req, res, next) {
         }
     ];
 
-    Employee.findById(empId).populate(populateQuery).exec(function (err, emp) {
+    Employee.findOne({"name": empName, "password": password}).populate(populateQuery).exec(function (err, emp) {
 
+        if (err) {
+            return res.json(ResponseUtils.responseError(err));
+        }
+
+        if (!emp) {
+            return res.json(ResponseUtils.responseMessage(false, 'failed', null));
+        }
+        return res.json(ResponseUtils.responseMessage(true, 'success', emp));
+
+    });
+
+}
+
+function getOneEmployee(req, res, next) {
+
+    let employeeId = req.params.id;
+
+    Employee.findById(employeeId).exec(function (err, emp){        
         if (err) {
             return res.json(ResponseUtils.responseError(err));
         }
@@ -67,9 +86,15 @@ function updateEmployee(req, res, next) {
 
     var employeeId = req.params.id;
     let viewer = req.body;
+    var employeeViewers = req.params.viewers;
 
     if (!employeeId) {
         return res.json(ResponseUtils.responseMessage(false, 'failed', null));
+    }
+
+    if(_.includes(employeeViewers, viewer) == true) {
+        console.log("here")
+        return;
     }
 
     let query = {
@@ -90,10 +115,16 @@ function updateEmployee(req, res, next) {
 function updateCompany(req, res, next) {
 
     var compId = req.params.id;
+    var companyViewers = req.params.viewer;
     let viewer = req.body;
 
     if (!compId) {
         return res.json(ResponseUtils.responseMessage(false, 'failed', null));
+    }
+
+    if (_.includes(companyViewers, viewer) == true) {
+        console.log("here")
+        return;
     }
 
     let query = {
@@ -157,7 +188,7 @@ function removeCompanyViewer(req, res, next) {
 
 }
 module.exports = {
-    login: login,
+    loginOneEmployee: loginOneEmployee,
     getOneEmployee: getOneEmployee,
     getOneCompany: getOneCompany,
     updateEmployee: updateEmployee,

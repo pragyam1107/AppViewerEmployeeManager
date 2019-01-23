@@ -1,1 +1,1 @@
-web: nodemon server/index.js
+web: npm i && nodemon server/index.js
